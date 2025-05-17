@@ -1,0 +1,124 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All-In-One Project</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    section { margin-bottom: 40px; }
+    h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    ul { padding-left: 20px; }
+    li { margin: 5px 0; }
+    input, select, button { margin: 5px; padding: 5px; }
+  </style>
+</head>
+<body>
+
+  <!-- Section 1: Portfolio -->
+  <section id="portfolio">
+    <h2>Portfolio</h2>
+    <h3>About Me</h3>
+    <p>I am a passionate web developer learning HTML, CSS, and JavaScript.</p>
+
+    <h3>Projects</h3>
+    <ul>
+      <li>Portfolio Website</li>
+      <li>To-Do App</li>
+      <li>Product Listing Page</li>
+    </ul>
+
+    <h3>Contact</h3>
+    <p>Email: me@example.com</p>
+  </section>
+
+  <!-- Section 2: To-Do List App -->
+  <section id="todo">
+    <h2>To-Do List</h2>
+    <input id="task" placeholder="Enter a task" />
+    <button onclick="addTask()">Add</button>
+    <ul id="taskList"></ul>
+  </section>
+
+  <!-- Section 3: Product Listing -->
+  <section id="products">
+    <h2>Product Listing</h2>
+    <label>Category:</label>
+    <select id="filter" onchange="showProducts()">
+      <option value="All">All</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Books">Books</option>
+    </select>
+
+    <label>Sort by:</label>
+    <select id="sort" onchange="showProducts()">
+      <option value="rating">Rating</option>
+      <option value="name">Name</option>
+    </select>
+
+    <ul id="productList"></ul>
+  </section>
+
+  <script>
+    // To-Do App Logic
+    const taskList = document.getElementById('taskList');
+
+    function addTask() {
+      const task = document.getElementById('task').value.trim();
+      if (!task) return;
+      let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+      tasks.push(task);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      document.getElementById('task').value = '';
+      showTasks();
+    }
+
+    function showTasks() {
+      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+      taskList.innerHTML = '';
+      tasks.forEach((task, i) => {
+        const li = document.createElement('li');
+        li.textContent = task;
+        li.onclick = () => removeTask(i);
+        taskList.appendChild(li);
+      });
+    }
+
+    function removeTask(index) {
+      let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      showTasks();
+    }
+
+    showTasks();
+
+    // Product Listing Logic
+    const products = [
+      { name: "Phone", category: "Electronics", rating: 4.3 },
+      { name: "Laptop", category: "Electronics", rating: 4.7 },
+      { name: "Book", category: "Books", rating: 4.5 }
+    ];
+
+    function showProducts() {
+      const filter = document.getElementById("filter").value;
+      const sort = document.getElementById("sort").value;
+      let filtered = filter === "All" ? products : products.filter(p => p.category === filter);
+      if (sort === "rating") {
+        filtered.sort((a, b) => b.rating - a.rating);
+      } else {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      const productList = document.getElementById("productList");
+      productList.innerHTML = '';
+      filtered.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = ${p.name} - ${p.category} - Rating: ${p.rating};
+        productList.appendChild(li);
+      });
+    }
+
+    showProducts();
+  </script>
+</body>
+</html>
